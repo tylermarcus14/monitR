@@ -1,0 +1,62 @@
+{% include "partials/dashnav.html" %}
+
+<main role="main" class="container">
+    <div class="col-lg-12">
+
+        <div class="common_style">
+            <p class="line">Settings</p>
+  <div class="row">
+    <div class="col-md-12 order-md-1">
+      <h4 class="mb-3">Text Alerts</h4>
+      <form action="/settings/update" method="post">
+        <div class="row">
+          <div class="col-md-12 mb-3">
+            <label>Phone #</label>
+            <input type="text" class="form-control" name="webhook_url_discord" placeholder="" value="{{settings.discord.webhook_url}}">
+            <a href="/settings/sms/test" style="margin-top: 30px; float: right;">Test</a>
+          </div>
+        </div>
+        <hr class="mb-4">
+        <h4 class="mb-3">Slack Alerts</h4>
+        <div class="row">
+          <div class="col-md-12 mb-3">
+            <label>Webhook URL</label>
+            <input type="text" class="form-control" name="webhook_url_slack" placeholder="" value="{{settings.slack.webhook_url}}">
+            <a href="/settings/slack/test" style="margin-top: 30px; float: right;">Test Webhook</a>
+          </div>
+        </div>
+
+        <hr class="mb-4">
+
+        <div class="custom-control custom-checkbox">
+          <input type="checkbox" class="custom-control-input" name="discordActive" id="discordActive" {{settings.discord.active}}>
+          <label class="custom-control-label" for="discordActive">Text Alerts</label>
+        </div>
+        <div class="custom-control custom-checkbox">
+          <input type="checkbox" class="custom-control-input" name="slackBotActive" id="slackBotActive" {{settings.slack.active}}>
+          <label class="custom-control-label" name="slackBotActive" for="slackBotActive">Slack</label>
+        </div>
+
+
+        <hr class="mb-4">
+
+        <input name="port" type="hidden" value="{{settings.port}}" />
+        <input name="mongodb_uri" type="hidden" value="{{settings.mongodb_uri}}" />
+
+        <button class="btn btn-success" type="submit">Save Changes</button>
+      </form>
+    </div>
+  </div>
+</div>  
+</div>
+</main>
+
+<!-- Bootstrap core JavaScript
+   ================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+<script>
+  window.jQuery || document.write('<script src="../../../../assets/js/vendor/jquery-slim.min.js"><\/script>')
+</script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+{% include "partials/footer.html" %}

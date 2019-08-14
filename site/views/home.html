@@ -1,0 +1,57 @@
+{% include "partials/header.html" %}
+
+	<!--================Home Banner Area =================-->
+	<section class="home_banner_area">
+      <div class="banner_inner">
+        <div class="container">
+          <div class="row">
+            <div class="col-lg-5">
+              <div class="banner_content">
+                <h2>
+                  Online Shopping <br>
+                  Product Monitor
+                </h2>
+                <p>
+                  Monitor any shopify website for new products added and any changes in price to get the best deals.  Simply make an account, add the sites you want to monitor and hit start!
+                </p>
+                <div class="d-flex align-items-center">
+                  <a class="primary_btn" href="#"><span>Register</span></a>
+                  <a id="play-home-video" class="video-play-button" href="https://www.youtube.com/">
+                    <span></span>
+                  </a>
+                  <div class="watch_video text-uppercase">
+                    watch the demo
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-7">
+              <div class="home_right_img">
+                <img class="img-fluid" src="/resources/img/banner/home-right.png" alt="">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <!--================End Home Banner Area =================-->
+  
+    
+
+<!-- Bootstrap core JavaScript
+   ================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+<script>
+  window.jQuery || document.write('<script src="../../../../assets/js/vendor/jquery-slim.min.js"><\/script>')
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.20.1/moment.min.js"></script>
+<script>
+setInterval(function() {
+  var dataStamp = $('#startTime').text();
+
+  $('#uptime').text('Started ' + moment(dataStamp, 'x').fromNow())
+}, 1000);
+</script>
+
+{% include "partials/footer.html" %}
