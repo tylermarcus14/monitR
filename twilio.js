@@ -5,7 +5,7 @@ const client = require('twilio')(accountSid, authToken);
 function Twilio (webhook_url) {
 client.messages 
       .create({ 
-         body: 'monitR Alerts', 
+         body: 'monitR Alert Test', 
          from: '+14072501797',       
          to: '+15614141909'
        }) 

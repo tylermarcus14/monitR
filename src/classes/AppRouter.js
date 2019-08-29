@@ -515,7 +515,7 @@ class AppRouter {
 
 		app.get('/settings/sms/test', (req, res, next) => {
 
-			Twilio(discord.webhook_url);
+			Twilio();
 
 			return res.redirect('/settings');
 
