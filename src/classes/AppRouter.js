@@ -388,7 +388,7 @@ class AppRouter {
 			let isEmpty = true;
 
 			Product
-				.find({})
+				.find({userEmail: req.user.email})
 				.exec(function(err, products) {
 
 					let productsList = [];
@@ -405,7 +405,7 @@ class AppRouter {
 					}
 
 					NewProduct
-					.find({})
+					.find({userEmail: req.user.email})
 					.sort('-dateAdded')
 					.exec(function(err, products) {
 
