@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 
 const sellerSchema = new mongoose.Schema({
+	userEmail: String,
 	url: String,
 	image: String,
 	lastItemAdded: String,

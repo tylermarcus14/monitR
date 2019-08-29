@@ -5,25 +5,7 @@
 
         <div class="common_style">
           <br>
-          <div class="container">
-              <div class="row">
-                <div class="col-3">
-                    <p class="line">Products</p>
-                  </div>
-                <div class="col-2">
-                </div>
-                <div class="col">
-                  <form action="/products/search" method="get">
-                    <div class="input-group mb-3">
-                        <input type="text" name="search" id="search" class="form-control" placeholder="Search...." aria-label="Search" aria-describedby="basic-addon2">
-                        <div class="input-group-append">
-                          <button class="btn btn-outline-secondary" type="submit">Search</button>
-                        </div>
-                      </div>               
-                  </form>
-
-                    </div>
-              </div>
+            <p class="line">Alerts</p>
   {% if needsRestart %}
   <div class="d-flex align-items-center p-3 my-3 text-white-50 bg-purple rounded box-shadow" style="background-color: #efac0fcf;">
     <a class="btn btn-sm btn btn-outline-light" href="/restart" style="margin-right: 20px;">Restart</a>
@@ -34,18 +16,9 @@
   </div>
   {% endif %}
 
-  <div class="d-flex align-items-center p-3 my-3 text-white-50 bg-purple rounded box-shadow" style="background-color: #fc0000d7;">
-      <a class="btn btn-sm btn btn-outline-light" href="/products/remove"  style="margin-right: 20px;">Remove All</a>
-      <div class="lh-100">
-        <h6 class="mb-0 text-white lh-100">Too Cluttered?</h6>
-        <small>Remove all of the products from the database.</small>
-      </div>
-    </div>
-
-
 
   <div class="my-3 p-3 bg-white rounded box-shadow">
-    <h4 class="border-bottom border-gray pb-2 mb-0">{{ count }}</h4>
+    <h4 class="border-bottom border-gray pb-2 mb-0">{{ count }} with alerts set</h4>
 
     {% for item in newItems %}
     <div class="media text-muted pt-3">
@@ -80,6 +53,6 @@ $('.custom-file-input').on('change',function(){
 </script>
 <script>
     $(".nav li").removeClass("active");
-    $('#products').addClass('active');
+    $('#alerts').addClass('active');
   </script>
 {% include "partials/footer.html" %}

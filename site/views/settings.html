@@ -4,6 +4,7 @@
     <div class="col-lg-12">
 
         <div class="common_style">
+          <br>
             <p class="line">Settings</p>
   <div class="row">
     <div class="col-md-12 order-md-1">
@@ -13,16 +14,16 @@
           <div class="col-md-12 mb-3">
             <label>Phone #</label>
             <input type="text" class="form-control" name="webhook_url_discord" placeholder="" value="{{settings.discord.webhook_url}}">
-            <a href="/settings/sms/test" style="margin-top: 30px; float: right;">Test</a>
+            <a href="/settings/sms/test" style="margin-top: 30px; float: right;">Test Alert</a>
           </div>
         </div>
         <hr class="mb-4">
-        <h4 class="mb-3">Slack Alerts</h4>
+        <h4 class="mb-3">Email Alerts</h4>
         <div class="row">
           <div class="col-md-12 mb-3">
-            <label>Webhook URL</label>
+            <label>Email</label>
             <input type="text" class="form-control" name="webhook_url_slack" placeholder="" value="{{settings.slack.webhook_url}}">
-            <a href="/settings/slack/test" style="margin-top: 30px; float: right;">Test Webhook</a>
+            <a href="/settings/email/test" style="margin-top: 30px; float: right;">Test Alert</a>
           </div>
         </div>
 
@@ -34,7 +35,7 @@
         </div>
         <div class="custom-control custom-checkbox">
           <input type="checkbox" class="custom-control-input" name="slackBotActive" id="slackBotActive" {{settings.slack.active}}>
-          <label class="custom-control-label" name="slackBotActive" for="slackBotActive">Slack</label>
+          <label class="custom-control-label" name="slackBotActive" for="slackBotActive">Email Alerts</label>
         </div>
 
 
@@ -59,4 +60,8 @@
   window.jQuery || document.write('<script src="../../../../assets/js/vendor/jquery-slim.min.js"><\/script>')
 </script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+<script>
+    $(".nav li").removeClass("active");
+    $('#settings').addClass('active');
+</script>
 {% include "partials/footer.html" %}

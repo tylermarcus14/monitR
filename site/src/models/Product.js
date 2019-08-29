@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 
 const productSchema = new mongoose.Schema({
+	userEmail: String,
 	url: String,
 	image: String,
 	title: String,
@@ -9,7 +10,8 @@ const productSchema = new mongoose.Schema({
 		ref: 'Seller'
 	},
 	dateAdded: Date,
-	lastModification: String
+	lastModification: String,
+	alerts: Boolean
 });
 
 const Product = mongoose.model('Product', productSchema);

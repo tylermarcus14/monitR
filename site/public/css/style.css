@@ -1517,6 +1517,14 @@ button:focus {
     .modal-message .modal-dialog .modal-content .modal-header p {
       display: block; }
 
+      .modal-backdrop {
+        z-index: 100000 !important;
+      }
+    
+      .modal {
+        z-index: 100001 !important;
+      }
+
 /* End Contact Success and error Area css
 ============================================================================================ */
 /*---------------------------------------------------- */

@@ -1,92 +1,93 @@
-{% include "partials/dashnav.html" %}
-<main role="main" class="container">
-        <div class="col-lg-12">
+<!doctype html>
+<html lang="en">
 
-                <div class="common_style">
-                  <br>
-                    <p class="line">Dashboard</p>
-        {% if needsRestart %}
-          <div class="d-flex align-items-center p-3 my-3 text-white-50 bg-purple rounded box-shadow" style="background-color: #efac0fcf;">
-            <a class="btn btn-sm btn btn-outline-light" href="/restart" style="margin-right: 20px; width: 64px;">Restart</a>
-            <div class="lh-100">
-              <h6 class="mb-0 text-white lh-100">Restart Required</h6>
-              <small>In order to apply changes on your tasks, you must restart.</small>
-            </div>
-          </div>
-        {% endif %}
-      
-        {% if status == 'Active' %}
-        <div class="d-flex align-items-center p-3 my-3 text-white-50 bg-purple rounded box-shadow" style="background-color: #4ea523cf;">
-          <a class="btn btn-sm btn btn-outline-light" href="/stop" style="margin-right: 20px; width: 64px;">Stop</a>
-          <div class="lh-100">
-            <h6 class="mb-0 text-white lh-100">Currently Active</h6>
-            <p id="startTime" hidden>{{ startTime }}</p>
-            <small id="uptime">Started</small>
-          </div>
-        </div>
-        {% endif %}
-      
-        {% if status == 'Stopped' %}
-        <div class="d-flex align-items-center p-3 my-3 text-white-50 bg-purple rounded box-shadow" style="background-color: #f70f0fcf;">
-          <a class="btn btn-sm btn btn-outline-light" href="/start" style="margin-right: 20px; width: 64px;">Start</a>
-          <div class="lh-100">
-            <h6 class="mb-0 text-white lh-100">Currently Inactive</h6>
-          </div>
-        </div>
-        {% endif %}
-      
-        <div class="my-3 p-3 bg-white rounded box-shadow">
-          <h4 class="border-bottom border-gray pb-2 mb-0">Best Deals</h4>
-      
-          {% for item in newItems %}
-            <div class="media text-muted pt-3">
-      
-              <img alt="64x64" class="mr-2 rounded" style="width: 100px;height: auto;" src="{{item.image}}" onerror="this.src='http://pixelartmaker.com/art/8326519c9fbbbb4.png'"
-              data-holder-rendered="true">
-      
-              <p class="media-body pb-3 mb-0 small lh-125 border-bottom border-gray">
-                <strong class="d-block text-gray-dark"><a href="{{item.url}}" target="_blank">
-                  {{item.title}}</a>
-                </strong>{{item.site}} 
-              </p>
-               <p>{{item.price}}</p>
+<head>
+	<!-- Required meta tags -->
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<link rel="icon" href="/public/img/profile.png" type="image/png">
+	<title>monitR</title>
+	<!-- Bootstrap CSS -->
+	<link rel="stylesheet" href="/public/css/bootstrap.css">
+	<link rel="stylesheet" href="/public/vendors/linericon/style.css">
+	<link rel="stylesheet" href="/public/vendors/owl-carousel/owl.carousel.min.css">
+	<link rel="stylesheet" href="/public/css/magnific-popup.css">
+	<link rel="stylesheet" href="/public/vendors/nice-select/css/nice-select.css">
+	<link rel="stylesheet" href="/public/vendors/animate-css/animate.css">
+  <link rel="stylesheet" href="/public/vendors/flaticon/flaticon.css">
+  <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" >
 
-               
+	<!-- main css -->
+	<link rel="stylesheet" href="/public/css/style.css">
+</head>
+<body>
+    <header class="header_area">
+        <div class="main_menu">
+          <nav class="navbar navbar-expand-lg navbar-light">
+            <div class="container">
+              <!-- Brand and toggle get grouped for better mobile display -->
+              <a class="navbar-brand logo_h" href="/"><img src="/public/img/logo.png" alt=""></a>
+              <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+               aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              <!-- Collect the nav links, forms, and other content for toggling -->
+              <div class="collapse navbar-collapse offset" id="navbarSupportedContent">
+                <ul class="nav navbar-nav menu_nav justify-content-end align-self-center">
+                    <li class="nav-item"><a class="nav-link" href="/login">Login</a></li>
+                    <li class="nav-item active"><a class="nav-link" href="/register">Register</a></li>
 
-
-            </div>
-          {% endfor %}
-      
-          {% if isEmpty %}
-          <span class="d-block" style="padding-top: 13px;">No products found in the database at the moment.</span>
-          {% endif %}
-      
-          <small class="d-block text-right mt-3">
-            <a href="/products">All products</a>
-            </small>
-        </div>
-        <div class="my-3 p-3 bg-white rounded box-shadow">
-          <h4 class="border-bottom border-gray pb-2 mb-0">Stores being monitored</h4>
-      
-          {% for store in stores %}
-            <div class="media text-muted pt-3">
-              <div alt="32x32" class="mr-2 rounded" style="width: 32px; height: 32px; background-color: {{ store.color }};"></div>
-              <div class="media-body pb-3 mb-0 small lh-125 border-bottom border-gray">
-                <div class="d-flex justify-content-between align-items-center w-100">
-                  <strong class="text-gray-dark"><a href="http://{{store.url}}" target="_blank">{{store.url}}</a></strong>
-                  <a href="/store/{{ store._id }}">Settings</a>
-                </div>
-                  <span class="d-block">{{ store.lastItemCount }} Total Items Stored</span>
+                  </ul>
+                </ul>
               </div>
             </div>
-          {% endfor %}
-      
-          <small class="d-block text-right mt-3">
-            <a href="/stores">All stores</a>
-            </small>
+          </nav>
         </div>
-    </div>
-</div>
+      </header>
+   
+   
+   
+  
+<main role="main" class="container">
+        <div class="col-lg-12">
+          <br>
+                <div class="common_style">
+                    <p class="line">Register</p>
+                    <br>
+                    <form action="/register/success" method="post">
+                      <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                          <div class="modal-header">
+                            <h5 class="modal-title" style="color: black;">Create an account</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                              </button>
+                          </div>
+                          <div class="modal-body">
+                              <div class="form-group">
+                                <label for="name" class="col-form-label" style="color: gray;">Name</label>
+                                <input type="name" name="name" class="form-control" id="name" placeholder="Name" required="required">
+                              </div>
+                              <div class="form-group">
+                                <label for="email" class="col-form-label" style="color: gray;">Email</label>
+                                <input type="email" name="email" class="form-control" id="email" placeholder="Email" required="required">
+                              </div>
+                              <div class="form-group">
+                                <label for="password" class="col-form-label" style="color: gray;">Password</label>
+                                <input type="password" name="password" class="form-control" id="password" placeholder="Password" required="required">
+                              </div>
+                          </div>
+                          <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Register</button>
+                          </div>
+                        </div>
+                      </div>
+                      </form>
+                      </div>
+        </div>
 
       </main>
 

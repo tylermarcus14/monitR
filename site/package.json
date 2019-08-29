@@ -35,7 +35,15 @@
     "slack-webhook": "^1.0.0",
     "stack": "^0.1.0",
     "twilio": "^3.33.3",
-    "xml2js": "^0.4.19"
+    "xml2js": "^0.4.19",
+    "bcryptjs": "*",
+    "passport": "*",
+    "passport-http": "*",
+    "passport-local": "*",
+    "connect-flash": "*",
+    "express-session": "*",
+    "express-messages": "*",
+    "express-handlebars": "*"
   },
   "devDependencies": {
     "nodemon": "^1.17.1"

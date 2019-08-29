@@ -8,7 +8,7 @@
   <div class="d-flex align-items-center p-3 my-3 text-white-50 bg-purple rounded box-shadow" style="background-color: #efac0fcf;">
     <a class="btn btn-sm btn btn-outline-light" href="/restart" style="margin-right: 20px;">Restart</a>
     <div class="lh-100">
-      <h4 class="mb-0 text-white lh-100">Restart Required</h4>
+      <h6 class="mb-0 text-white lh-100">Restart Required</h6>
       <small>In order to apply changes on your tasks, you must restart.</small>
     </div>
   </div>
@@ -21,21 +21,39 @@
        <div class="container" style="padding-top: 30px;">
           <div class="row">
              <div class="col-md-12 order-md-1">
-                <h1 class="mb-3 text-center">{{url}}</h1>
+                  <div class="container-fluidf">
+                        <div class="row">
+
+                              <div class="col align-self-start">
+                                    <h4 class="text-left">{{title}}</h4>
+                                 </div>
+                                 <div class="col align-self-start">
+                                       <div class="row text-center">
+                              <img  class="center-block" style="width: 30%;height: auto;" src="{{image}}" onerror="this.src='http://pixelartmaker.com/art/8326519c9fbbbb4.png'"        data-holder-rendered="true">
+                           </div> 
+                        </div> 
+                        </div>
+                        <div class="row">
+                        <h4 class="text-left">{{price}}</h4>
+                        </div>
+                        <div class="row">
+                              <a href="{{url}}" target="_blank">{{url}}</a>                        </div>
+                      </div>
+
                 <div class="d-flex align-items-center p-3 my-3 text-white-50 bg-purple rounded box-shadow" style="background-color: #4ea523cf;width: 100%;">
                    <img src="/public/cal.png" style="width: 30px; margin-right: 10px;">
                    <div class="lh-100">
-                      <h4 class="mb-0 text-white lh-100">Date Added</h4>
+                      <h6 class="mb-0 text-white lh-100">Date Added</h6>
                       <small id="uptime">{{dateAdded}}</small>
                    </div>
                 </div>
-                <div class="d-flex align-items-center p-3 my-3 text-white-50 bg-purple rounded box-shadow" style="background-color: #3e6871cf;width: 100%;">
+                <!-- <div class="d-flex align-items-center p-3 my-3 text-white-50 bg-purple rounded box-shadow" style="background-color: #3e6871cf;width: 100%;">
                    <img src="/public/cart-icon.png" style="
                       width: 30px;
                       margin-right: 10px;
                       ">
                    <div class="lh-100">
-                      <h4 class="mb-0 text-white lh-100">Item Count</h4>
+                      <h6 class="mb-0 text-white lh-100">Last Item Count</h6>
                       <small id="uptime">{{lastItemCount}}</small>
                    </div>
                 </div>
@@ -45,47 +63,45 @@
                       margin-right: 10px;
                       ">
                    <div class="lh-100">
-                      <h4 class="mb-0 text-white lh-100">Last Item Added</h4>
+                      <h6 class="mb-0 text-white lh-100">Last Item Added</h6>
                       <a href="{{lastItemAdded}}" style="color: white;"><small id="uptime">{{lastItemAdded}}</small></a>
                    </div>
-                </div>
+                </div> -->
                 <form action="/store/update/{{_id}}" method="post">
-                   <div class="row">
-                   </div>
+
                    <hr class="mb-4">
-                   <h4 class="mb-3">Store Settings</h4>
+                   <h4 class="mb-3">Alert IF:</h4>
                    <div class="row">
                       <div class="col-md-12 mb-3">
                          <div class="row">
-                            <div class="col-md-6 mb-3">
-                               <label for="firstName">Refresh Rate (ms) </label>
-                               <input type="number" class="form-control" name="pollMS" placeholder="Example: 30000" value="{{pollMS}}">
-                            </div>
-                         </div>
-                         <div class="row">
-                            <div class="col-md-6 mb-3">
-                                 <fieldset disabled>
+                            <div class="col-md-4 mb-3">
 
-                               <label for="firstName">Proxies (Coming Soon)</label>
-                               <textarea class="form-control" name="proxies" placeholder="ip:port
-ip:port:username:password" style="margin-top: 0px; margin-bottom: 0px; height: 92px;">{{proxies}}</textarea>
-</fieldset>
-
+                                 <div class="input-group">
+                                       <input type="text" class="form-control" placeholder="Current Price" aria-label="Desired Price">
+                                       <div class="input-group-append">
+                                         <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Less than</button>
+                                         <div class="dropdown-menu">
+                                           <a class="dropdown-item" href="#">Less than</a>
+                                           <a class="dropdown-item" href="#">Greater than</a>
+                                         </div>
+                                       </div>
+                                     </div>
                             </div>
-                            <div class="col-md-6 mb-3">
-                               <label for="lastName">Keywords (Optional)</label>
-                               <textarea class="form-control" value="{{keywords}}" name="keywords" placeholder="T-Shirt&#10;Stickers&#10;Golf" style="margin-top: 0px; margin-bottom: 0px; height: 89px;">{{keywords}}</textarea>
+                            <div class="col-md-3 mb-3">
+
+                               <input type="number" class="form-control" name="pollMS" placeholder="Desired Price" value="{{pollMS}}">
                             </div>
                          </div>
                       </div>
                    </div>
                    <hr class="mb-4">
-                   <input name="port" type="hidden" value="3000">
-                   <input name="mongodb_uri" type="hidden" value="mongodb://127.0.0.1:27017">
+                  </form>
+
+                  <form style="padding-top: 16px;" method="post" action="/product/update/{{_id}}">
                    <button class="btn btn-primary btn-lg btn-block" type="submit">Save Changes</button>
-                </form>
-                <form style="padding-top: 16px;" method="get" action="/store/delete/{{_id}}">
-                    <button class="btn btn-danger btn-lg btn-block" type="submit">Delete Store</button>
+                  </form>
+                   <form style="padding-top: 16px;" method="get" action="/product/delete/{{_id}}">
+                    <button class="btn btn-danger btn-lg btn-block" type="submit">Delete Product</button>
                 </form>
              </div>
           </div>
@@ -111,8 +127,7 @@ $('.custom-file-input').on('change',function(){
 })
 </script>
 <script>
-   $(".nav li").removeClass("active");
-   $('#stores').addClass('active');
- </script>
-
+      $(".nav li").removeClass("active");
+      $('#products').addClass('active');
+</script>
 {% include "partials/footer.html" %}

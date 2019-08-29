@@ -15,7 +15,43 @@
                   Monitor any shopify website for new products added and any changes in price to get the best deals.  Simply make an account, add the sites you want to monitor and hit start!
                 </p>
                 <div class="d-flex align-items-center">
-                  <a class="primary_btn" href="#"><span>Register</span></a>
+                  <a class="primary_btn" href="#" data-toggle="modal" data-target="#addModal"><span>Register</span></a>
+                  <div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                  <form action="/register/success" method="post">
+                    <div class="modal-dialog" role="document">
+                      <div class="modal-content">
+                        <div class="modal-header">
+                          <h5 class="modal-title" style="color: black;">Create an account</h5>
+                          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                              <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="form-group">
+                              <label for="name" class="col-form-label" style="color: gray;">Name</label>
+                              <input type="name" name="name" class="form-control" id="regName" placeholder="Name" required="required">
+                            </div>
+                            <div class="form-group">
+                              <label for="email" class="col-form-label" style="color: gray;">Email</label>
+                              <input type="email" name="email" class="form-control" id="regEmail" placeholder="Email" required="required">
+                            </div>
+                            <div class="form-group">
+                              <label for="password" class="col-form-label" style="color: gray;">Password</label>
+                              <input type="password" name="password" class="form-control" id="regPassword" placeholder="Password" required="required">
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                          <button type="submit" class="btn btn-primary">Register</button>
+                        </div>
+                      </div>
+                    </div>
+                    </form>
+                  </div>
+
+
+
+
                   <a id="play-home-video" class="video-play-button" href="https://www.youtube.com/">
                     <span></span>
                   </a>
@@ -27,7 +63,7 @@
             </div>
             <div class="col-lg-7">
               <div class="home_right_img">
-                <img class="img-fluid" src="/resources/img/banner/home-right.png" alt="">
+                <img class="img-fluid" src="/public/img/banner/home-right.png" alt="">
               </div>
             </div>
           </div>

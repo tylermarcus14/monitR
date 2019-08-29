@@ -4,6 +4,8 @@ const {
 
 const Seller = require('../models/Seller');
 const Product = require('../models/Product');
+const User = require('../models/User');
+
 const NewProduct = require('../models/NewProduct');
 
 const Notify = require('../classes/Notify');
@@ -16,10 +18,15 @@ const multer = require('multer')
 const upload = multer({
 	dest: 'uploads/'
 })
+const passport = require('passport');
+require('../config/passport')(passport);
+
+const { ensureAuthenticated, forwardAuthenticated } = require('../config/auth');
 
 let randomColors = [
 	'#007bff'
 ]
+
 
 class AppRouter {
 
@@ -34,7 +41,7 @@ class AppRouter {
 		app.get('/', (req, res, next) => {
 
 			let storesList = [];
-			let newItemsWithColors = [];
+			let newItems = [];
 			let isEmpty = true;
 
 			Seller
@@ -63,7 +70,7 @@ class AppRouter {
 						.exec(function(err, products) {
 
 							for (let i = 0; i < products.length; i++) {
-								newItemsWithColors.push({
+								newItems.push({
 									// color: randomColors[Math.floor(Math.random() * randomColors.length)],
 									url: products[i].url,
 									// image: products[i].image,
@@ -73,7 +80,7 @@ class AppRouter {
 								})
 							}
 
-							if (newItemsWithColors.length > 0) {
+							if (newItems.length > 0) {
 								isEmpty = false;
 							}
 
@@ -83,7 +90,7 @@ class AppRouter {
 								count: (stores.length == 1) ? '1 Store' : `${stores.length} Stores`,
 								needsRestart: global.needsRestart,
 								startTime: global.startTime,
-								newItems: newItemsWithColors,
+								newItems: newItems,
 								isEmpty: isEmpty
 							});
 
@@ -93,14 +100,73 @@ class AppRouter {
 
 		});
 
-		app.get('/dashboard', (req, res, next) => {
+		app.get('/login', (req, res, next) => {
+			return res.render('login', {});
+		});
+		
+
+
+			// Login
+		app.post('/login/success', (req, res, next) => {
+			passport.authenticate('local', {
+			successRedirect: '/dashboard',
+			failureRedirect: '/login',
+			failureFlash: true
+			})(req, res, next);
+		});
+		
+
+		// Logout
+		app.get('/logout/sucess', function(req, res){
+			req.logout();
+			res.redirect('/');
+		  });
+
+		
+  
+
+
+		// app.post('/login/success', (req, res, next) => {
+
+		// 	return res.redirect('/dashboard');
+		// });
+
+		app.get('/register', (req, res, next) => {
+
+			return res.render('register', {});
+		});
+
+
+		app.post('/register/success', (req, res, next) => {
+			let newUser = new User({
+				email: req.body.email,
+				password: req.body.password,
+				name: req.body.name
+			});
+
+			User.createUser(newUser, function(err, User){
+				if (err) {
+					return res.json({
+						message: 'Please try again.',
+						error: true
+					})
+				} else {
+					User.save();
+					req.flash(
+					'success_msg', 'You have successfully registerd.');
+					return res.redirect('/login');
+			}
+		});
+		});
+
+		app.get('/dashboard', ensureAuthenticated, (req, res, next) => {
 
 			let storesList = [];
-			let newItemsWithColors = [];
+			let newItems = [];
 			let isEmpty = true;
 
 			Seller
-				.find({})
+				.find({userEmail: req.user.email})
 				.limit(3)
 				.sort('-dateAdded')
 				.exec(function(err, stores) {
@@ -119,13 +185,13 @@ class AppRouter {
 					}
 
 					NewProduct
-						.find({})
+						.find({userEmail: req.user.email})
 						.sort('-dateAdded')
 						.limit(3)
 						.exec(function(err, products) {
 
 							for (let i = 0; i < products.length; i++) {
-								newItemsWithColors.push({
+								newItems.push({
 									// color: randomColors[Math.floor(Math.random() * randomColors.length)],
 									url: products[i].url,
 									image: products[i].image,
@@ -136,7 +202,7 @@ class AppRouter {
 								})
 							}
 
-							if (newItemsWithColors.length > 0) {
+							if (newItems.length > 0) {
 								isEmpty = false;
 							}
 
@@ -146,7 +212,7 @@ class AppRouter {
 								count: (stores.length == 1) ? '1 Store' : `${stores.length} Stores`,
 								needsRestart: global.needsRestart,
 								startTime: global.startTime,
-								newItems: newItemsWithColors,
+								newItems: newItems,
 								isEmpty: isEmpty
 							});
 
@@ -156,10 +222,11 @@ class AppRouter {
 
 		});
 
-		app.get('/stores', (req, res, next) => {
+
+		app.get('/stores', ensureAuthenticated, (req, res, next) => {
 
 			Seller
-				.find({})
+				.find({userEmail: req.user.email})
 				.exec(function(err, stores) {
 
 					let storesList = [];
@@ -197,6 +264,7 @@ class AppRouter {
 			}
 
 			let newStore = new Seller({
+				userEmail: req.user.email,
 				url: parseUrl(req.body.url).resource,
 				lastItemAdded: null,
 				lastItemCount: null,
@@ -217,7 +285,7 @@ class AppRouter {
 
 		});
 
-		app.get('/settings', (req, res, next) => {
+		app.get('/settings', ensureAuthenticated, (req, res, next) => {
 
 			fs.readFile(__dirname + '/../../config.json', function(err, data) {
 				let dataToAppend = JSON.parse(data);
@@ -299,11 +367,6 @@ class AppRouter {
 			return res.redirect('/dashboard');
 		});
 
-		app.get('/logs', (req, res, next) => {
-			return res.render('logs', {
-				logs: global.logs
-			});
-		});
 
 
 		app.get('/features', (req, res, next) => {
@@ -317,10 +380,11 @@ class AppRouter {
 			return res.render('contact', {});
 		});
 	
-		app.get('/products', (req, res, next) => {
+
+		app.get('/alerts', ensureAuthenticated, (req, res, next) => {
 		
 			let storesList = [];
-			let newItemsWithColors = [];
+			let newItems = [];
 			let isEmpty = true;
 
 			Product
@@ -346,19 +410,87 @@ class AppRouter {
 					.exec(function(err, products) {
 
 						for (let i = 0; i < products.length; i++) {
-							newItemsWithColors.push({
+							newItems.push({
 								// color: randomColors[Math.floor(Math.random() * randomColors.length)],
 								url: products[i].url,
 								image: products[i].image,
 								dateAdded: products[i].dateAdded,
 								site: products[i].site,
 								title: products[i].title,
-								price: products[i].price
+								price: products[i].price,
+								_id: products[i]._id
+
 
 							})
 						}
 
-						if (newItemsWithColors.length > 0) {
+						if (newItems.length > 0) {
+							isEmpty = false;
+						}
+
+						return res.render('alerts', {
+							status: global.status,
+							stores: storesList,
+							needsRestart: global.needsRestart,
+							startTime: global.startTime,
+							newItems: newItems,
+							isEmpty: isEmpty,
+							products: productsList,
+							count: (products.length == 1) ? '1 Product' : `${products.length} Products`,
+							needsRestart: global.needsRestart
+						});
+
+					});
+
+				});
+
+		});
+
+
+		app.get('/products', ensureAuthenticated, (req, res, next) => {
+		
+			let storesList = [];
+			let newItems = [];
+			let isEmpty = true;
+
+			Product
+				.find({userEmail: req.user.email})
+				.exec(function(err, products) {
+
+					let productsList = [];
+
+					for (let i = 0; i < products.length; i++) {
+						productsList.push({
+							_id: products[i]._id,
+							url: products[i].url,
+							// image: products[i].res.img,
+							// title: products[i].res.title,
+							seller: products[i].seller,
+							dateAdded: moment()
+						})
+					}
+
+					NewProduct
+					.find({userEmail: req.user.email})
+					.sort('-dateAdded')
+					.exec(function(err, products) {
+
+						for (let i = 0; i < products.length; i++) {
+							newItems.push({
+								// color: randomColors[Math.floor(Math.random() * randomColors.length)],
+								url: products[i].url,
+								image: products[i].image,
+								dateAdded: products[i].dateAdded,
+								site: products[i].site,
+								title: products[i].title,
+								price: products[i].price,
+								_id: products[i]._id
+
+
+							})
+						}
+
+						if (newItems.length > 0) {
 							isEmpty = false;
 						}
 
@@ -367,7 +499,7 @@ class AppRouter {
 							stores: storesList,
 							needsRestart: global.needsRestart,
 							startTime: global.startTime,
-							newItems: newItemsWithColors,
+							newItems: newItems,
 							isEmpty: isEmpty,
 							products: productsList,
 							count: (products.length == 1) ? '1 Product' : `${products.length} Products`,
@@ -383,7 +515,7 @@ class AppRouter {
 
 		app.get('/settings/sms/test', (req, res, next) => {
 
-			Twilio();
+			Twilio(discord.webhook_url);
 
 			return res.redirect('/settings');
 
@@ -399,15 +531,10 @@ class AppRouter {
 
 		});
 
-		app.get('/logs/clear', (req, res, next) => {
-			global.logs = '';
-			return res.redirect('/logs');
-		});
-
 
 		app.get('/products/remove', (req, res, next) => {
-			NewProduct.deleteMany({}, function(err) {})
-			Product.deleteMany({}, function(err) {
+			NewProduct.deleteMany(({userEmail: req.user.email}), function(err) {})
+			Product.deleteMany(({userEmail: req.user.email}), function(err) {
 				if (err) {
 					return res.json({
 						message: 'No products to remove.',
@@ -439,10 +566,9 @@ class AppRouter {
 			});
 		});
 	
-
 	
 		app.get('/product/delete/:id', (req, res, next) => {
-			Product.findOneAndRemove({
+			NewProduct.findOneAndRemove({
 				_id: req.params.id
 			}, function(err) {
 				if (err) {
@@ -457,36 +583,198 @@ class AppRouter {
 			});
 		});
 
-		app.post('/stores/addFile', upload.single('sitelist'), (req, res, next) => {
+		app.get('/products/search', ensureAuthenticated, (req, res, next) => {
+			let search2 = ('search ' + req.params.value)
+			let searchterm = 'ICON Sticker Pack'
+			let storesList = [];
+			let newItems = [];
+			let isEmpty = true;
 
-			if (req.body.file == '' || req.body.pollMS == '') {
-				return res.json(200, {
-					message: 'Missing important fields to add store, please try again',
-					error: true
-				})
-			}
+			Product
+				.find({})
+				.exec(function(err, products) {
 
-			const siteList = fs.readFileSync(req.file.path).toString().split('\n');
+					let productsList = [];
 
-			for (let i = 0; i < siteList.length; i++) {
-				if (siteList[i] != '') {
-					let newStore = new Seller({
-						url: parseUrl(siteList[i]).resource,
-						lastItemAdded: null,
-						lastItemCount: null,
-						proxies: (req.body.proxies == '') ? [] : proxyUtil.formatList(req.body.proxies.replace(/\r/g, '').split('\n')),
-						keywords: (req.body.keywords == '') ? [] : req.body.keywords.replace(/\r/g, '').split('\n'),
-						pollMS: req.body.pollMS,
-						dateAdded: moment(),
-						storeHash: null
+					for (let i = 0; i < products.length; i++) {
+						productsList.push({
+							_id: products[i]._id,
+							url: products[i].url,
+							// image: products[i].res.img,
+							// title: products[i].res.title,
+							seller: products[i].seller,
+							dateAdded: moment()
+						})
+					}
+
+					NewProduct
+					.find({ title: searchterm })
+					.sort('-dateAdded')
+					.exec(function(err, products) {
+						console.log(req.body)
+						console.log(searchterm)
+						console.log(search2)
+
+						for (let i = 0; i < products.length; i++) {
+							newItems.push({
+								// color: randomColors[Math.floor(Math.random() * randomColors.length)],
+								url: products[i].url,
+								image: products[i].image,
+								dateAdded: products[i].dateAdded,
+								site: products[i].site,
+								title: products[i].title,
+								price: products[i].price,
+								_id: products[i]._id
+
+
+							})
+						}
+						return res.render('products', {
+							status: global.status,
+							stores: storesList,
+							needsRestart: global.needsRestart,
+							startTime: global.startTime,
+							newItems: newItems,
+							isEmpty: isEmpty,
+							products: productsList,
+							count: (products.length == 1) ? '1 Product' : `${products.length} Products`,
+							needsRestart: global.needsRestart
+						});
+
 					});
-					newStore.save();
-				}
-			}
-			global.stopTasks();
-			return res.redirect('/stores');
+		});
+	});
+
+		app.get('/products/search', ensureAuthenticated, (req, res, next) => {
+			let search2 = ('search ' + req.params.value)
+			let searchterm = 'ICON Sticker Pack'
+			let storesList = [];
+			let newItems = [];
+			let isEmpty = true;
+
+			Product
+				.find({})
+				.exec(function(err, products) {
+
+					let productsList = [];
+
+					for (let i = 0; i < products.length; i++) {
+						productsList.push({
+							_id: products[i]._id,
+							url: products[i].url,
+							// image: products[i].res.img,
+							// title: products[i].res.title,
+							seller: products[i].seller,
+							dateAdded: moment()
+						})
+					}
+
+					NewProduct
+					.find({ title: searchterm })
+					.sort('-dateAdded')
+					.exec(function(err, products) {
+						console.log(req.body)
+						console.log(searchterm)
+						console.log(search2)
+
+						for (let i = 0; i < products.length; i++) {
+							newItems.push({
+								// color: randomColors[Math.floor(Math.random() * randomColors.length)],
+								url: products[i].url,
+								image: products[i].image,
+								dateAdded: products[i].dateAdded,
+								site: products[i].site,
+								title: products[i].title,
+								price: products[i].price,
+								_id: products[i]._id
+
+
+							})
+						}
+						return res.render('products', {
+							status: global.status,
+							stores: storesList,
+							needsRestart: global.needsRestart,
+							startTime: global.startTime,
+							newItems: newItems,
+							isEmpty: isEmpty,
+							products: productsList,
+							count: (products.length == 1) ? '1 Product' : `${products.length} Products`,
+							needsRestart: global.needsRestart
+						});
+
+					});
+		});
+	});
+
+
+		// app.get('/products/:search', (req, res) => {
+		// 	NewProduct.find({ title: req.body.search }, (err, s) => {
+		// 		return res.render('products', s);
+		// 	});
+
+		// });
+
+		app.get('/product/:search', (req, res) => {
+
+			NewProduct.findById(req.params.search, (err, s) => {
+				return res.render('product', s);
+				
+			});
 
 		});
+
+		app.post('/product/update/:id', (req, res) => {
+
+			NewProduct.findById(req.params.id, (err, s) => {
+
+				if (err) return res.redirect('/products');
+
+				s.pollMS = parseInt(req.body.pollMS);
+				s.proxies = (req.body.proxies == '') ? [] : proxyUtil.formatList(req.body.proxies.replace(/\r/g, '').split('\n'))
+				s.keywords = (req.body.keywords == '') ? [] : req.body.keywords.replace(/\r/g, '').split('\n');
+
+				s.save();
+				global.stopTasks();
+
+				setTimeout(() => {
+					return res.redirect(`/product/${req.params.id}`);
+				}, 1500);
+
+			});
+
+		});
+
+		// app.post('/stores/addFile', upload.single('sitelist'), (req, res, next) => {
+
+		// 	if (req.body.file == '' || req.body.pollMS == '') {
+		// 		return res.json(200, {
+		// 			message: 'Missing important fields to add store, please try again',
+		// 			error: true
+		// 		})
+		// 	}
+
+		// 	const siteList = fs.readFileSync(req.file.path).toString().split('\n');
+
+		// 	for (let i = 0; i < siteList.length; i++) {
+		// 		if (siteList[i] != '') {
+		// 			let newStore = new Seller({
+		// 				url: parseUrl(siteList[i]).resource,
+		// 				lastItemAdded: null,
+		// 				lastItemCount: null,
+		// 				proxies: (req.body.proxies == '') ? [] : proxyUtil.formatList(req.body.proxies.replace(/\r/g, '').split('\n')),
+		// 				keywords: (req.body.keywords == '') ? [] : req.body.keywords.replace(/\r/g, '').split('\n'),
+		// 				pollMS: req.body.pollMS,
+		// 				dateAdded: moment(),
+		// 				storeHash: null
+		// 			});
+		// 			newStore.save();
+		// 		}
+		// 	}
+		// 	global.stopTasks();
+		// 	return res.redirect('/stores');
+
+		// });
 
 		app.get('/store/:id', (req, res) => {
 

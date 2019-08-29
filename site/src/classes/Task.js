@@ -4,6 +4,7 @@ const Notify = require('./Notify');
 const mongoose = require('mongoose');
 const fs = require('fs');
 
+const User = require('../models/User');
 const Seller = require('../models/Seller');
 const Product = require('../models/Product');
 const NewProduct = require('../models/NewProduct');
@@ -26,6 +27,7 @@ class Task {
 		this.intervalCount = 0;
 		this.poll = monitorData.pollMS;
 		this.sellerID = monitorData._id;
+		this.userEmail = monitorData.userEmail;
 		this.ysMode = null;
 	}
 
@@ -64,6 +66,7 @@ class Task {
 							
 							for (let i = 0; i < products.length; i++) {
 								let newProduct = new Product({
+									userEmail: this.userEmail,
 									url: products[i].loc[0],
 									// image: products[i]["image:image"]["image:loc"],
 									title: products[i].loc[0].title,
@@ -82,6 +85,7 @@ class Task {
 								}
 
 								let newCop = new NewProduct({
+									userEmail: this.userEmail,
 									url: products[i].loc[0],
 									image: res.img,
 									dateAdded: moment(),
