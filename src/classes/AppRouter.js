@@ -186,7 +186,7 @@ class AppRouter {
 
 					NewProduct
 						.find({userEmail: req.user.email})
-						.sort('-dateAdded')
+						.sort('-price')
 						.limit(3)
 						.exec(function(err, products) {
 
